@@ -1,20 +1,30 @@
-import React, { useContext, useReducer, useEffect } from "react";
-import cartItems from "./data";
+import { useContext, useReducer, useEffect, createContext } from "react";
 import reducer from "./reducer";
 
 const url = "https://course-api.com/react-useReducer-cart-project";
 
-const AppContext = React.createContext();
+const AppContext = createContext();
 
 const defaultState = {
   loading: false,
-  cart: cartItems,
+  cart: new Map(), // cart: [],
   total: 0,
-  amount: 0,
+  noOfItems: 0,
 };
 
 export const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, defaultState);
+
+  const fetchData = async () => {
+    dispatch({ type: "LOADING" });
+    try {
+      const response = await fetch(url);
+      const newCart = await response.json();
+      dispatch({ type: "ADD_TO_CART", payload: newCart });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -24,32 +34,21 @@ export const AppProvider = ({ children }) => {
     dispatch({ type: "GET_TOTALS" });
   }, [state.cart]);
 
-  function clearCart() {
+  const clearCart = () => {
     dispatch({ type: "CLEAR_CART" });
-  }
+  };
 
-  function removeItemFromCart(id) {
+  const removeItemFromCart = (id) => {
     dispatch({ type: "REMOVE_ITEM", payload: id });
-  }
+  };
 
-  function increaseAmount(id) {
+  const increaseAmount = (id) => {
     dispatch({ type: "INCREASE_AMOUNT", payload: id });
-  }
+  };
 
-  function decreaseAmount(id) {
+  const decreaseAmount = (id) => {
     dispatch({ type: "DECREASE_AMOUNT", payload: id });
-  }
-
-  async function fetchData() {
-    dispatch({ type: "LOADING" });
-    try {
-      const response = await fetch(url);
-      const newCart = await response.json();
-      dispatch({ type: "ADD_TO_CART", payload: newCart });
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  };
 
   return (
     <AppContext.Provider

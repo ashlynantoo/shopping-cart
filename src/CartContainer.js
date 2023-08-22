@@ -1,11 +1,12 @@
-import React from "react";
 import CartItem from "./CartItem";
 import { useGlobalContext } from "./context";
 
 const CartContainer = () => {
   const { cart, total, clearCart } = useGlobalContext();
 
-  if (cart.length === 0) {
+  const cartArray = Array.from(cart.entries());
+
+  if (cartArray.length === 0) {
     return (
       <section className="cart">
         {/* cart header */}
@@ -24,8 +25,9 @@ const CartContainer = () => {
       </header>
       {/* cart items */}
       <div>
-        {cart.map((item) => {
-          return <CartItem key={item.id} {...item} />;
+        {cartArray.map((cartItem) => {
+          const [itemId, item] = cartItem;
+          return <CartItem key={itemId} {...item} />;
         })}
       </div>
       {/* cart footer */}

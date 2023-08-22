@@ -1,4 +1,3 @@
-import React from "react";
 import { useGlobalContext } from "./context";
 
 // components
@@ -6,7 +5,7 @@ import Navbar from "./Navbar";
 import CartContainer from "./CartContainer";
 // items
 
-function App() {
+const App = () => {
   const { loading } = useGlobalContext();
 
   if (loading) {
@@ -22,6 +21,6 @@ function App() {
       <CartContainer />
     </main>
   );
-}
+};
 
 export default App;
